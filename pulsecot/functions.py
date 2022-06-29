@@ -88,7 +88,7 @@ def incident_to_cot_xml(
     cot_host_id = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
     cot_uid = f"PulsePoint-{pp_id}"
 
-    if "fire" in pp_call_type.lower():
+    if "fire" in call_type.lower():
         cot_type = "a-h-G"
     else:
         cot_type = "a-u-G"
