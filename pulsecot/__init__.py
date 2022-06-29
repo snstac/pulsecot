@@ -17,7 +17,7 @@
 #
 
 """
-SFPD CAD Cursor-on-Target Gateway.
+PulsePoint Cursor-On-Target Gateway.
 ~~~~
 
 :author: Greg Albrecht W2GMD <oss@undef.net>
@@ -26,13 +26,13 @@ SFPD CAD Cursor-on-Target Gateway.
 :source: <https://github.com/ampledata/pulsecot>
 """
 
-from .constants import (
+from .constants import (  # NOQA
     DEFAULT_POLL_INTERVAL,
-    DEFAULT_INCIDENT_TYPES,
     DEFAULT_COT_STALE,
-)  # NOQA
+    DEFAULT_AGENCY_IDS,
+)
 
-from .functions import incident_to_cot, create_tasks, decode_pulse  # NOQA
+from .functions import incident_to_cot, create_tasks  # NOQA
 
 from .classes import CADWorker  # NOQA
 

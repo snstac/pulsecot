@@ -16,9 +16,10 @@
 # Author:: Greg Albrecht W2GMD <oss@undef.net>
 #
 
-"""SFPDCADCOT Class Definitions."""
+"""PulseCOT Class Definitions."""
 
 import asyncio
+import random
 
 from typing import Union
 
@@ -27,6 +28,7 @@ import aiohttp
 import pytak
 import pulsecot
 
+from pulsecot.gnu import decode_pulse
 
 __author__ = "Greg Albrecht W2GMD <oss@undef.net>"
 __copyright__ = "Copyright 2022 Greg Albrecht"
@@ -55,7 +57,11 @@ class CADWorker(pytak.QueueWorker):
 
             await self.put_queue(event)
 
-    async def get_pp_feed(self, agency_id: str = "EMS1384") -> dict:
+    async def get_pp_feed(self, agency_id: str) -> dict:
+        if not agency_id:
+            self._logger.warning("No agency_id specified, try `find_agency()`?")
+            return
+
         url: str = f"https://web.pulsepoint.org/DB/giba.php?agency_id={agency_id}"
         async with self.session.get(url) as resp:
             if resp.status != 200:
@@ -68,7 +74,7 @@ class CADWorker(pytak.QueueWorker):
             if json_resp == None:
                 return
 
-            decoded_data = pulsecot.decode_pulse(json_resp)
+            decoded_data = decode_pulse(json_resp)
             await self.handle_data(decoded_data["incidents"]["active"])
 
     async def run(self, number_of_iterations=-1) -> None:
@@ -78,9 +84,14 @@ class CADWorker(pytak.QueueWorker):
         poll_interval: str = self.config.get(
             "POLL_INTERVAL", pulsecot.DEFAULT_POLL_INTERVAL
         )
+        agency_ids: str = self.config.get("AGENCY_IDS", pulsecot.DEFAULT_AGENCY_IDS)
 
         async with aiohttp.ClientSession() as self.session:
             while 1:
-                self._logger.info("%s polling every %ss", self.__class__, poll_interval)
-                await self.get_pp_feed()
+                self._logger.info(
+                    "%s polling %s every %ss", self.__class__, agency_ids, poll_interval
+                )
+                for agency_id in agency_ids.split(","):
+                    await self.get_pp_feed(agency_id.strip())
+                    await asyncio.sleep(random.random() * 10)
                 await asyncio.sleep(int(poll_interval))

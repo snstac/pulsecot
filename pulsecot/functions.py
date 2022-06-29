@@ -18,18 +18,14 @@
 
 """PulseCOT Functions."""
 
-import base64
-import hashlib
-import json
 import xml.etree.ElementTree as ET
 
 from configparser import SectionProxy
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
 from typing import Union, Set
 
 import pytak
 import pulsecot  # pylint: disable=cyclic-import
+import pulsecot.gnu
 
 __author__ = "Greg Albrecht W2GMD <oss@undef.net>"
 __copyright__ = "Copyright 2022 Greg Albrecht"
@@ -86,7 +82,7 @@ def incident_to_cot_xml(
     remarks_fields = []
     pp_id: str = incident["ID"]
     pp_call_type: str = incident["PulsePointIncidentCallType"]
-    call_type: str = pulsecot.DEFAULT_INCIDENT_TYPES.get(pp_call_type, pp_call_type)
+    call_type: str = pulsecot.gnu.DEFAULT_INCIDENT_TYPES.get(pp_call_type, pp_call_type)
 
     cot_stale = int(config.get("COT_STALE"))
     cot_host_id = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
@@ -152,63 +148,6 @@ def incident_to_cot(call: dict, config: Union[dict, None] = None) -> Union[bytes
     """Wrapper that returns COT as an XML string."""
     cot: Union[ET.Element, None] = incident_to_cot_xml(call, config)
     return ET.tostring(cot) if cot else None
-
-
-def decode_pulse(data: dict) -> list:
-    """
-    Decodes PulsePoint Incident data from web.pulsepoint.org
-
-    Parameters
-    ----------
-    data : `dict`
-        PulsePoint Incident JSON converted to Python dict.
-
-    Returns
-    -------
-    `list`
-    """
-    ct = base64.b64decode(data.get("ct"))
-    iv = bytes.fromhex(data.get("iv"))
-    salt = bytes.fromhex(data.get("s"))
-
-    # Build the password
-    token = ""
-    ekey = "CommonIncidents"
-    token += (
-        ekey[13]
-        + ekey[1]
-        + ekey[2]
-        + "brady"
-        + "5"
-        + "r"
-        + ekey.lower()[6]
-        + ekey[5]
-        + "gs"
-    )
-
-    # Calculate a key from the password
-    hasher = hashlib.md5()
-    key = b""
-    block = None
-
-    while len(key) < 32:
-        if block:
-            hasher.update(block)
-        hasher.update(token.encode())
-        hasher.update(salt)
-        block = hasher.digest()
-        hasher = hashlib.md5()
-        key += block
-
-    # Create a cipher and decrypt the data
-    backend = default_backend()
-    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-    decryptor = cipher.decryptor()
-    out = decryptor.update(ct) + decryptor.finalize()
-    out = out[1 : out.rindex(b'"')].decode()
-    out = out.replace(r"\"", r'"')
-    
-    return json.loads(out)
 
 
 #  [{'AddressTruncated': '1',
