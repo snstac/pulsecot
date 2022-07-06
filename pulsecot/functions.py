@@ -54,7 +54,9 @@ def create_tasks(
 
 
 def incident_to_cot_xml(
-    incident: dict, config: Union[SectionProxy, None] = None
+    incident: dict,
+    config: Union[SectionProxy, None] = None,
+    agency: Union[dict, None] = None,
 ) -> Union[ET.Element, None]:
     """
     Serializes a PulsePoint Incidents as Cursor-On-Target XML.
@@ -80,24 +82,30 @@ def incident_to_cot_xml(
         return None
 
     remarks_fields = []
+
     pp_id: str = incident["ID"]
     pp_call_type: str = incident["PulsePointIncidentCallType"]
     call_type: str = pulsecot.gnu.DEFAULT_INCIDENT_TYPES.get(pp_call_type, pp_call_type)
-
-    cot_stale = int(config.get("COT_STALE"))
-    cot_host_id = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
-    cot_uid = f"PulsePoint-{pp_id}"
-
-    if "fire" in call_type.lower():
-        cot_type = "a-h-G"
-    else:
-        cot_type = "a-u-G"
+    cot_stale: int = int(config.get("COT_STALE"))
+    cot_host_id: str = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
+    cot_uid: str = f"PulsePoint-{agency['agency_initials']}-{pp_id}"
+    cot_type: str = "a-u-G"
 
     callsign = f"{call_type} - {incident['FullDisplayAddress']}"
+    iconsetpath = "f7f71666-8b28-4b57-9fbb-e38e61d33b79/Google/caution.png"
 
     remarks_fields.append(callsign)
-    remarks_fields.append(f"PP Call Type: {pp_call_type}")
-    remarks_fields.append(f"PP ID: {pp_id}")
+    remarks_fields.append(agency["short_agencyname"])
+
+    live_radio: Union[list, None] = agency["live_radio"]
+    if live_radio:
+        if "URL" in live_radio[0]:
+            link = ET.Element("link")
+            radio_url = live_radio[0].get("URL")
+            remarks_fields.append(f"Radio: {radio_url}")
+
+    remarks_fields.append(f"PPCallType: {pp_call_type}")
+    remarks_fields.append(f"PPID: {pp_id}")
 
     point = ET.Element("point")
     point.set("lat", str(lat))
@@ -113,21 +121,27 @@ def incident_to_cot_xml(
     contact = ET.Element("contact")
     contact.set("callsign", str(callsign))
 
-    track = ET.Element("track")
-    track.set("course", str("9999999.0"))
-    track.set("speed", str("9999999.0"))
+    usericon = ET.Element("usericon")
+    _call_type = call_type.lower()
+    if "fire" in _call_type:
+        cot_type = "a-h-G"
+        iconsetpath = "83198b4872a8c34eb9c549da8a4de5a28f07821185b39a2277948f66c24ac17a/GeoOps/Fire Location.png"
+    elif "medical" in _call_type:
+        cot_type = "a-f-G"
+        iconsetpath = "83198b4872a8c34eb9c549da8a4de5a28f07821185b39a2277948f66c24ac17a/GeoOps/Medical.png"
+    usericon.set("iconsetpath", iconsetpath)
 
     detail = ET.Element("detail")
     detail.set("uid", cot_uid)
     detail.append(uid)
     detail.append(contact)
-    detail.append(track)
+    detail.append(usericon)
 
     remarks = ET.Element("remarks")
 
     remarks_fields.append(f"{cot_host_id}")
 
-    _remarks = " - ".join(list(filter(None, remarks_fields)))
+    _remarks = " -\n ".join(list(filter(None, remarks_fields)))
 
     remarks.text = _remarks
     detail.append(remarks)
@@ -137,9 +151,8 @@ def incident_to_cot_xml(
     root.set("type", cot_type)
     root.set("uid", cot_uid)
     root.set("how", "m-g")
-    # FIXME: Convert CAD timestamp to UTC, and use here:
     root.set("time", pytak.cot_time())
-    root.set("start", pytak.cot_time())
+    root.set("start", incident["CallReceivedDateTime"])
     root.set("stale", pytak.cot_time(cot_stale))
 
     root.append(point)
@@ -148,9 +161,11 @@ def incident_to_cot_xml(
     return root
 
 
-def incident_to_cot(call: dict, config: Union[dict, None] = None) -> Union[bytes, None]:
+def incident_to_cot(
+    call: dict, config: Union[dict, None] = None, agency: Union[dict, None] = None
+) -> Union[bytes, None]:
     """Wrapper that returns COT as an XML string."""
-    cot: Union[ET.Element, None] = incident_to_cot_xml(call, config)
+    cot: Union[ET.Element, None] = incident_to_cot_xml(call, config, agency)
     return ET.tostring(cot) if cot else None
 
 

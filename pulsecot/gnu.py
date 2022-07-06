@@ -860,8 +860,10 @@ def get_agencies() -> Union[dict, None]:
         return agencies
 
 
-def find_agency(name: str = ""):
-    agencies: Union[dict, None] = get_agencies()
+def find_agency(
+    name: str = "", agencies: Union[dict, None] = None
+) -> Union[None, dict]:
+    agencies: Union[dict, None] = agencies or get_agencies()
     if not agencies:
         return None
 
@@ -874,7 +876,11 @@ def find_agency(name: str = ""):
 
     for a_id, a_data in agencies.items():
         for opt in options:
-            if opt in a_data and str(a_data[opt]).lower() in str(name).lower() or str(name).lower() in str(a_data[opt]).lower():
+            if (
+                opt in a_data
+                and str(a_data[opt]).lower() in str(name).lower()
+                or str(name).lower() in str(a_data[opt]).lower()
+            ):
                 print(f"Using \"{a_data['agencyname']}\" instead!")
                 return a_id
 

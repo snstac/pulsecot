@@ -19,6 +19,7 @@ __license__ = "Apache License, Version 2.0"
 def test_get_agencies():
     agencies = pulsecot.gnu.get_agencies()
     import pprint
+
     pprint.pprint(agencies)
     assert False == True
     # print(agencies)

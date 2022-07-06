@@ -39,6 +39,8 @@ class CADWorker(pytak.QueueWorker):
 
     """Reads CAD Data, renders to COT, and puts on Queue."""
 
+    agency_details: dict = {}
+
     async def handle_data(self, data: list) -> None:
         """
         Transforms Data to COT and puts it onto TX queue.
@@ -46,9 +48,9 @@ class CADWorker(pytak.QueueWorker):
         if not data:
             return
 
-        for incident in data:
+        for incident in data["incidents"]:
             event: Union[str, None] = pulsecot.incident_to_cot(
-                incident, config=self.config
+                incident, config=self.config, agency=data["agency"]
             )
 
             if not event:
@@ -75,7 +77,14 @@ class CADWorker(pytak.QueueWorker):
                 return
 
             decoded_data = decode_pulse(json_resp)
-            await self.handle_data(decoded_data["incidents"]["active"])
+
+            active: Union[dict, None] = decoded_data["incidents"]["active"]
+            if not active:
+                return
+
+            data = {"incidents": active, "agency": self.agency_details[agency_id]}
+
+            await self.handle_data(data)
 
     async def run(self, number_of_iterations=-1) -> None:
         """Runs this Thread, Reads from Pollers."""
@@ -85,6 +94,11 @@ class CADWorker(pytak.QueueWorker):
             "POLL_INTERVAL", pulsecot.DEFAULT_POLL_INTERVAL
         )
         agency_ids: str = self.config.get("AGENCY_IDS", pulsecot.DEFAULT_AGENCY_IDS)
+
+        # Populate the agency hints:
+        agencies = pulsecot.gnu.get_agencies()
+        for agency_id in agency_ids.split(","):
+            self.agency_details[agency_id] = agencies[agency_id]
 
         async with aiohttp.ClientSession() as self.session:
             while 1:
