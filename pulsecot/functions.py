@@ -81,11 +81,15 @@ def incident_to_cot_xml(
     if lat is None or lon is None:
         return None
 
+    if lat == "0.0000000000" or lon == "0.0000000000":
+        return None
+
     remarks_fields = []
 
     pp_id: str = incident["ID"]
     pp_call_type: str = incident["PulsePointIncidentCallType"]
-    call_type: str = pulsecot.gnu.DEFAULT_INCIDENT_TYPES.get(pp_call_type, pp_call_type)
+    call_type_meta = pulsecot.PP_CALL_TYPES.get(pp_call_type)
+    call_type: str = call_type_meta.get('name')
     cot_stale: int = int(config.get("COT_STALE"))
     cot_host_id: str = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
     cot_uid: str = f"PulsePoint-{agency['agency_initials']}-{pp_id}"
@@ -97,7 +101,7 @@ def incident_to_cot_xml(
     remarks_fields.append(callsign)
     remarks_fields.append(agency["short_agencyname"])
 
-    live_radio: Union[list, None] = agency["live_radio"]
+    live_radio: Union[list, None] = agency.get("live_radio")
     if live_radio:
         if "URL" in live_radio[0]:
             link = ET.Element("link")
@@ -115,9 +119,6 @@ def incident_to_cot_xml(
     point.set("le", str("9999999.0"))
     point.set("hae", str("9999999.0"))
 
-    uid = ET.Element("UID")
-    uid.set("Droid", str(callsign))
-
     contact = ET.Element("contact")
     contact.set("callsign", str(callsign))
 
@@ -132,8 +133,6 @@ def incident_to_cot_xml(
     usericon.set("iconsetpath", iconsetpath)
 
     detail = ET.Element("detail")
-    detail.set("uid", cot_uid)
-    detail.append(uid)
     detail.append(contact)
     detail.append(usericon)
 
@@ -166,7 +165,9 @@ def incident_to_cot(
 ) -> Union[bytes, None]:
     """Wrapper that returns COT as an XML string."""
     cot: Union[ET.Element, None] = incident_to_cot_xml(call, config, agency)
-    return ET.tostring(cot) if cot else None
+    return (
+        b"\n".join([pytak.DEFAULT_XML_DECLARATION, ET.tostring(cot)]) if cot else None
+    )
 
 
 #  [{'AddressTruncated': '1',

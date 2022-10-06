@@ -37,7 +37,7 @@ __license__ = "Apache License, Version 2.0"
 
 class CADWorker(pytak.QueueWorker):
 
-    """Reads CAD Data, renders to COT, and puts on Queue."""
+    """Reads CAD Data, renders to CoT, and puts on Queue."""
 
     agency_details: dict = {}
 
@@ -48,13 +48,13 @@ class CADWorker(pytak.QueueWorker):
         if not data:
             return
 
-        for incident in data["incidents"]:
+        for incident in data.get("incidents", []):
             event: Union[str, None] = pulsecot.incident_to_cot(
                 incident, config=self.config, agency=data["agency"]
             )
 
             if not event:
-                self._logger.debug("Empty COT")
+                self._logger.debug("Empty CoT")
                 continue
 
             await self.put_queue(event)
@@ -64,7 +64,7 @@ class CADWorker(pytak.QueueWorker):
             self._logger.warning("No agency_id specified, try `find_agency()`?")
             return
 
-        url: str = f"https://web.pulsepoint.org/DB/giba.php?agency_id={agency_id}"
+        url: str = f"{pulsecot.DEFAULT_PP_URL}{agency_id}"
         async with self.session.get(url) as resp:
             if resp.status != 200:
                 response_content = await resp.text()
@@ -78,7 +78,7 @@ class CADWorker(pytak.QueueWorker):
 
             decoded_data = decode_pulse(json_resp)
 
-            active: Union[dict, None] = decoded_data["incidents"]["active"]
+            active: Union[dict, None] = decoded_data.get("incidents", {}).get("active")
             if not active:
                 return
 

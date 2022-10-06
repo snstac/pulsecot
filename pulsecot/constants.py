@@ -18,8 +18,9 @@
 
 """PulseCOT Constants."""
 
-import logging
+import json
 import os
+import pkg_resources
 
 __author__ = "Greg Albrecht W2GMD <oss@undef.net>"
 __copyright__ = "Copyright 2022 Greg Albrecht"
@@ -29,3 +30,12 @@ __license__ = "Apache License, Version 2.0"
 DEFAULT_POLL_INTERVAL: int = 120
 DEFAULT_COT_STALE: str = "130"
 DEFAULT_AGENCY_IDS: str = "21105,EMS1384,41000"
+DEFAULT_PP_URL: str = "https://web.pulsepoint.org/DB/giba.php?agency_id="
+
+DEFAULT_PP_CALL_TYPES_FILE: str = os.getenv(
+    "PP_CALL_TYPES_FILE",
+    pkg_resources.resource_filename(__name__, "data/call_types.json"),
+)
+
+with open(DEFAULT_PP_CALL_TYPES_FILE, "r") as call_types_file:
+    PP_CALL_TYPES: dict = json.load(call_types_file)

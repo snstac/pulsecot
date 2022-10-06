@@ -5,6 +5,8 @@ SFPD CAD to Cursor-On-Target Gateway.
    :alt: Screenshot of ADS-B PLI in ATAK.
    :target: https://github.com/ampledata/pulsecot/blob/main/docs/Screenshot_20201026-142037_ATAK.jpg
 
+Example agencies:
+* DC Fire & EMS: EMS1205
 
 The SFPD CAD to Cursor-On-Target Gateway (SFPDCADCOT) transforms SFPD Computer 
 Aided Dispatch (CAD) calls for service to Cursor-On-Target (COT) Events for 
