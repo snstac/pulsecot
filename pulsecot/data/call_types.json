@@ -1,0 +1,594 @@
+{
+  "AA": {
+    "name": "Auto Aid",
+    "image": {
+      "listIcon": "list_aa.png",
+      "mapIconActive": "map_aa_active.png",
+      "mapIconRecent": "map_aa_recent.png"
+    }
+  },
+  "MU": {
+    "name": "Mutual Aid",
+    "image": {
+      "listIcon": "list_mu.png",
+      "mapIconActive": "map_mu_active.png",
+      "mapIconRecent": "map_mu_recent.png"
+    }
+  },
+  "ST": {
+    "name": "Strike Team",
+    "image": {
+      "listIcon": "list_st.png",
+      "mapIconActive": "map_st_active.png",
+      "mapIconRecent": "map_st_recent.png"
+    }
+  },
+  "AE": {
+    "name": "Aircraft Emergency",
+    "image": {
+      "listIcon": "list_ae.png",
+      "mapIconActive": "map_ae_active.png",
+      "mapIconRecent": "map_ae_recent.png"
+    }
+  },
+  "AES": {
+    "name": "Aircraft Emergency Standby",
+    "image": {
+      "listIcon": "list_aes.png",
+      "mapIconActive": "map_aes_active.png",
+      "mapIconRecent": "map_aes_recent.png"
+    }
+  },
+  "AC": {
+    "name": "Aircraft Crash",
+    "image": {
+      "listIcon": "list_ac.png",
+      "mapIconActive": "map_ac_active.png",
+      "mapIconRecent": "map_ac_recent.png"
+    }
+  },
+  "OA": {
+    "name": "Alarm",
+    "image": {
+      "listIcon": "list_oa.png",
+      "mapIconActive": "map_oa_active.png",
+      "mapIconRecent": "map_oa_recent.png"
+    }
+  },
+  "FA": {
+    "name": "Fire Alarm",
+    "image": {
+      "listIcon": "list_fa.png",
+      "mapIconActive": "map_fa_active.png",
+      "mapIconRecent": "map_fa_recent.png"
+    }
+  },
+  "SD": {
+    "name": "Smoke Detector",
+    "image": {
+      "listIcon": "list_sd.png",
+      "mapIconActive": "map_sd_active.png",
+      "mapIconRecent": "map_sd_recent.png"
+    }
+  },
+  "WFA": {
+    "name": "Waterflow Alarm",
+    "image": {
+      "listIcon": "list_wfa.png",
+      "mapIconActive": "map_wfa_active.png",
+      "mapIconRecent": "map_wfa_recent.png"
+    }
+  },
+  "MA": {
+    "name": "Manual Alarm",
+    "image": {
+      "listIcon": "list_ma.png",
+      "mapIconActive": "map_ma_active.png",
+      "mapIconRecent": "map_ma_recent.png"
+    }
+  },
+  "CMA": {
+    "name": "Carbon Monoxide",
+    "image": {
+      "listIcon": "list_cma.png",
+      "mapIconActive": "map_cma_active.png",
+      "mapIconRecent": "map_cma_recent.png"
+    }
+  },
+  "AED": {
+    "name": "AED Alarm",
+    "image": {
+      "listIcon": "list_aed.png",
+      "mapIconActive": "map_aed_active.png",
+      "mapIconRecent": "map_aed_recent.png"
+    }
+  },
+  "TRBL": {
+    "name": "Trouble Alarm",
+    "image": {
+      "listIcon": "list_trbl.png",
+      "mapIconActive": "map_trbl_active.png",
+      "mapIconRecent": "map_trbl_recent.png"
+    }
+  },
+  "FL": {
+    "name": "Flooding",
+    "image": {
+      "listIcon": "list_fl.png",
+      "mapIconActive": "map_fl_active.png",
+      "mapIconRecent": "map_fl_recent.png"
+    }
+  },
+  "LR": {
+    "name": "Ladder Request",
+    "image": {
+      "listIcon": "list_lr.png",
+      "mapIconActive": "map_lr_active.png",
+      "mapIconRecent": "map_lr_recent.png"
+    }
+  },
+  "LA": {
+    "name": "Lift Assist",
+    "image": {
+      "listIcon": "list_la.png",
+      "mapIconActive": "map_la_active.png",
+      "mapIconRecent": "map_la_recent.png"
+    }
+  },
+  "PS": {
+    "name": "Public Service",
+    "image": {
+      "listIcon": "list_ps.png",
+      "mapIconActive": "map_ps_active.png",
+      "mapIconRecent": "map_ps_recent.png"
+    }
+  },
+  "EX": {
+    "name": "Explosion",
+    "image": {
+      "listIcon": "list_ex.png",
+      "mapIconActive": "map_ex_active.png",
+      "mapIconRecent": "map_ex_recent.png"
+    }
+  },
+  "PE": {
+    "name": "Pipeline Emergency",
+    "image": {
+      "listIcon": "list_pe.png",
+      "mapIconActive": "map_pe_active.png",
+      "mapIconRecent": "map_pe_recent.png"
+    }
+  },
+  "TE": {
+    "name": "Transformer Explosion",
+    "image": {
+      "listIcon": "list_te.png",
+      "mapIconActive": "map_te_active.png",
+      "mapIconRecent": "map_te_recent.png"
+    }
+  },
+  "SF": {
+    "name": "Structure Fire",
+    "image": {
+      "listIcon": "list_sf.png",
+      "mapIconActive": "map_sf_active.png",
+      "mapIconRecent": "map_sf_recent.png"
+    }
+  },
+  "VEG": {
+    "name": "Vegetation Fire",
+    "image": {
+      "listIcon": "list_veg.png",
+      "mapIconActive": "map_veg_active.png",
+      "mapIconRecent": "map_veg_recent.png"
+    }
+  },
+  "WSF": {
+    "name": "Confirmed Structure Fire",
+    "image": {
+      "listIcon": "list_wsf.png",
+      "mapIconActive": "map_wsf_active.png",
+      "mapIconRecent": "map_wsf_recent.png"
+    }
+  },
+  "WVEG": {
+    "name": "Confirmed Vegetation Fire",
+    "image": {
+      "listIcon": "list_wveg.png",
+      "mapIconActive": "map_wveg_active.png",
+      "mapIconRecent": "map_wveg_recent.png"
+    }
+  },
+  "CF": {
+    "name": "Commercial Fire",
+    "image": {
+      "listIcon": "list_cf.png",
+      "mapIconActive": "map_cf_active.png",
+      "mapIconRecent": "map_cf_recent.png"
+    }
+  },
+  "RF": {
+    "name": "Residential Fire",
+    "image": {
+      "listIcon": "list_rf.png",
+      "mapIconActive": "map_rf_active.png",
+      "mapIconRecent": "map_rf_recent.png"
+    }
+  },
+  "WCF": {
+    "name": "Working Commercial Fire",
+    "image": {
+      "listIcon": "list_wcf.png",
+      "mapIconActive": "map_wcf_active.png",
+      "mapIconRecent": "map_wcf_recent.png"
+    }
+  },
+  "WRF": {
+    "name": "Working Residential Fire",
+    "image": {
+      "listIcon": "list_wrf.png",
+      "mapIconActive": "map_wrf_active.png",
+      "mapIconRecent": "map_wrf_recent.png"
+    }
+  },
+  "VF": {
+    "name": "Vehicle Fire",
+    "image": {
+      "listIcon": "list_vf.png",
+      "mapIconActive": "map_vf_active.png",
+      "mapIconRecent": "map_vf_recent.png"
+    }
+  },
+  "EF": {
+    "name": "Extinguished Fire",
+    "image": {
+      "listIcon": "list_ef.png",
+      "mapIconActive": "map_ef_active.png",
+      "mapIconRecent": "map_ef_recent.png"
+    }
+  },
+  "IF": {
+    "name": "Illegal Fire",
+    "image": {
+      "listIcon": "list_if.png",
+      "mapIconActive": "map_if_active.png",
+      "mapIconRecent": "map_if_recent.png"
+    }
+  },
+  "MF": {
+    "name": "Marine Fire",
+    "image": {
+      "listIcon": "list_mf.png",
+      "mapIconActive": "map_mf_active.png",
+      "mapIconRecent": "map_mf_recent.png"
+    }
+  },
+  "OF": {
+    "name": "Outside Fire",
+    "image": {
+      "listIcon": "list_of.png",
+      "mapIconActive": "map_of_active.png",
+      "mapIconRecent": "map_of_recent.png"
+    }
+  },
+  "PF": {
+    "name": "Pole Fire",
+    "image": {
+      "listIcon": "list_pf.png",
+      "mapIconActive": "map_pf_active.png",
+      "mapIconRecent": "map_pf_recent.png"
+    }
+  },
+  "GF": {
+    "name": "Refuge/Garbage Fire",
+    "image": {
+      "listIcon": "list_gf.png",
+      "mapIconActive": "map_gf_active.png",
+      "mapIconRecent": "map_gf_recent.png"
+    }
+  },
+  "FULL": {
+    "name": "Full Assignment",
+    "image": {
+      "listIcon": "list_full.png",
+      "mapIconActive": "map_full_active.png",
+      "mapIconRecent": "map_full_recent.png"
+    }
+  },
+  "GAS": {
+    "name": "Gas main",
+    "image": {
+      "listIcon": "list_gas.png",
+      "mapIconActive": "map_gas_active.png",
+      "mapIconRecent": "map_gas_recent.png"
+    }
+  },
+  "HC": {
+    "name": "Hazardous Condition",
+    "image": {
+      "listIcon": "list_hc.png",
+      "mapIconActive": "map_hc_active.png",
+      "mapIconRecent": "map_hc_recent.png"
+    }
+  },
+  "BT": {
+    "name": "Bomb Threat",
+    "image": {
+      "listIcon": "list_bt.png",
+      "mapIconActive": "map_bt_active.png",
+      "mapIconRecent": "map_bt_recent.png"
+    }
+  },
+  "HMR": {
+    "name": "Hazmat Response",
+    "image": {
+      "listIcon": "list_hmr.png",
+      "mapIconActive": "map_hmr_active.png",
+      "mapIconRecent": "map_hmr_recent.png"
+    }
+  },
+  "TD": {
+    "name": "Tree Down",
+    "image": {
+      "listIcon": "list_td.png",
+      "mapIconActive": "map_td_active.png",
+      "mapIconRecent": "map_td_recent.png"
+    }
+  },
+  "INV": {
+    "name": "Investigation",
+    "image": {
+      "listIcon": "list_inv.png",
+      "mapIconActive": "map_inv_active.png",
+      "mapIconRecent": "map_inv_recent.png"
+    }
+  },
+  "HMI": {
+    "name": "Hazmat Investigation",
+    "image": {
+      "listIcon": "list_hmi.png",
+      "mapIconActive": "map_hmi_active.png",
+      "mapIconRecent": "map_hmi_recent.png"
+    }
+  },
+  "OI": {
+    "name": "Odor Investigation",
+    "image": {
+      "listIcon": "list_oi.png",
+      "mapIconActive": "map_oi_active.png",
+      "mapIconRecent": "map_oi_recent.png"
+    }
+  },
+  "SI": {
+    "name": "Smoke Investigation",
+    "image": {
+      "listIcon": "list_si.png",
+      "mapIconActive": "map_si_active.png",
+      "mapIconRecent": "map_si_recent.png"
+    }
+  },
+  "AI": {
+    "name": "Arson Investigation",
+    "image": {
+      "listIcon": "list_ai.png",
+      "mapIconActive": "map_ai_active.png",
+      "mapIconRecent": "map_ai_recent.png"
+    }
+  },
+  "LO": {
+    "name": "Lockout",
+    "image": {
+      "listIcon": "list_lo.png",
+      "mapIconActive": "map_lo_active.png",
+      "mapIconRecent": "map_lo_recent.png"
+    }
+  },
+  "CL": {
+    "name": "Commercial Lockout",
+    "image": {
+      "listIcon": "list_cl.png",
+      "mapIconActive": "map_cl_active.png",
+      "mapIconRecent": "map_cl_recent.png"
+    }
+  },
+  "RL": {
+    "name": "Residential Lockout",
+    "image": {
+      "listIcon": "list_rl.png",
+      "mapIconActive": "map_rl_active.png",
+      "mapIconRecent": "map_rl_recent.png"
+    }
+  },
+  "VL": {
+    "name": "Vehicle Lockout",
+    "image": {
+      "listIcon": "list_vl.png",
+      "mapIconActive": "map_vl_active.png",
+      "mapIconRecent": "map_vl_recent.png"
+    }
+  },
+  "ME": {
+    "name": "Medical Emergency",
+    "image": {
+      "listIcon": "list_me.png",
+      "mapIconActive": "map_me_active.png",
+      "mapIconRecent": "map_me_recent.png"
+    }
+  },
+  "IFT": {
+    "name": "Interfacility Transfer",
+    "image": {
+      "listIcon": "list_ift.png",
+      "mapIconActive": "map_ift_active.png",
+      "mapIconRecent": "map_ift_recent.png"
+    }
+  },
+  "MCI": {
+    "name": "Multi Casualty",
+    "image": {
+      "listIcon": "list_mci.png",
+      "mapIconActive": "map_mci_active.png",
+      "mapIconRecent": "map_mci_recent.png"
+    }
+  },
+  "FLW": {
+    "name": "Flood Warning",
+    "image": {
+      "listIcon": "list_flw.png",
+      "mapIconActive": "map_flw_active.png",
+      "mapIconRecent": "map_flw_recent.png"
+    }
+  },
+  "TOW": {
+    "name": "Tornado Warning",
+    "image": {
+      "listIcon": "list_tow.png",
+      "mapIconActive": "map_tow_active.png",
+      "mapIconRecent": "map_tow_recent.png"
+    }
+  },
+  "TSW": {
+    "name": "Tsunami Warning",
+    "image": {
+      "listIcon": "list_tsw.png",
+      "mapIconActive": "map_tsw_active.png",
+      "mapIconRecent": "map_tsw_recent.png"
+    }
+  },
+  "CA": {
+    "name": "Community Activity",
+    "image": {
+      "listIcon": "list_ca.png",
+      "mapIconActive": "map_ca_active.png",
+      "mapIconRecent": "map_ca_recent.png"
+    }
+  },
+  "FW": {
+    "name": "Fire Watch",
+    "image": {
+      "listIcon": "list_fw.png",
+      "mapIconActive": "map_fw_active.png",
+      "mapIconRecent": "map_fw_recent.png"
+    }
+  },
+  "TRNG": {
+    "name": "Training",
+    "image": {
+      "listIcon": "list_trng.png",
+      "mapIconActive": "map_trng_active.png",
+      "mapIconRecent": "map_trng_recent.png"
+    }
+  },
+  "RES": {
+    "name": "Rescue",
+    "image": {
+      "listIcon": "list_res.png",
+      "mapIconActive": "map_res_active.png",
+      "mapIconRecent": "map_res_recent.png"
+    }
+  },
+  "CR": {
+    "name": "Cliff Rescue",
+    "image": {
+      "listIcon": "list_cr.png",
+      "mapIconActive": "map_cr_active.png",
+      "mapIconRecent": "map_cr_recent.png"
+    }
+  },
+  "CSR": {
+    "name": "Confined Space",
+    "image": {
+      "listIcon": "list_csr.png",
+      "mapIconActive": "map_csr_active.png",
+      "mapIconRecent": "map_csr_recent.png"
+    }
+  },
+  "RR": {
+    "name": "Rope Rescue",
+    "image": {
+      "listIcon": "list_rr.png",
+      "mapIconActive": "map_rr_active.png",
+      "mapIconRecent": "map_rr_recent.png"
+    }
+  },
+  "TR": {
+    "name": "Technical Rescue",
+    "image": {
+      "listIcon": "list_tr.png",
+      "mapIconActive": "map_tr_active.png",
+      "mapIconRecent": "map_tr_recent.png"
+    }
+  },
+  "TNR": {
+    "name": "Trench Rescue",
+    "image": {
+      "listIcon": "list_tnr.png",
+      "mapIconActive": "map_tnr_active.png",
+      "mapIconRecent": "map_tnr_recent.png"
+    }
+  },
+  "WR": {
+    "name": "Water Rescue",
+    "image": {
+      "listIcon": "list_wr.png",
+      "mapIconActive": "map_wr_active.png",
+      "mapIconRecent": "map_wr_recent.png"
+    }
+  },
+  "TCE": {
+    "name": "Expanded Traffic Collision",
+    "image": {
+      "listIcon": "list_tce.png",
+      "mapIconActive": "map_tce_active.png",
+      "mapIconRecent": "map_tce_recent.png"
+    }
+  },
+  "TC": {
+    "name": "Traffic Collision",
+    "image": {
+      "listIcon": "list_tc.png",
+      "mapIconActive": "map_tc_active.png",
+      "mapIconRecent": "map_tc_recent.png"
+    }
+  },
+  "TCT": {
+    "name": "Traffic Collision Involving Train",
+    "image": {
+      "listIcon": "list_tct.png",
+      "mapIconActive": "map_tct_active.png",
+      "mapIconRecent": "map_tct_recent.png"
+    }
+  },
+  "UNK": {
+    "name": "Unknown",
+    "image": {
+      "listIcon": "list_default.png",
+      "mapIconActive": "map_default_active.png",
+      "mapIconRecent": "map_default_recent.png"
+    }
+  },
+  "WA": {
+    "name": "Wires Arcing",
+    "image": {
+      "listIcon": "list_wa.png",
+      "mapIconActive": "map_wa_active.png",
+      "mapIconRecent": "map_wa_recent.png"
+    }
+  },
+  "WD": {
+    "name": "Wires Down",
+    "image": {
+      "listIcon": "list_wd.png",
+      "mapIconActive": "map_wd_active.png",
+      "mapIconRecent": "map_wd_recent.png"
+    }
+  },
+  "Default": {
+    "name": "Emergency",
+    "image": {
+      "listIcon": "list_default.png",
+      "mapIconActive": "map_default_active.png",
+      "mapIconRecent": "map_default_recent.png"
+    }
+  }
+}
