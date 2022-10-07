@@ -65,4 +65,5 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     keywords=["CAD", "Cursor on Target", "ATAK", "TAK", "COT"],
+    package_data={'': ['data/*.json']},
 )

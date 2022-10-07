@@ -1,4 +1,12 @@
 {
+  "ELR": {
+    "name": "Elevator Rescue",
+    "image": {
+      "listIcon": "list_elr.png",
+      "mapIconActive": "map_elr_active.png",
+      "mapIconRecent": "map_elr_recent.png"
+    }
+  },
   "AA": {
     "name": "Auto Aid",
     "image": {
