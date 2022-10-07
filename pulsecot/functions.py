@@ -89,6 +89,9 @@ def incident_to_cot_xml(
     pp_id: str = incident["ID"]
     pp_call_type: str = incident["PulsePointIncidentCallType"]
     call_type_meta = pulsecot.PP_CALL_TYPES.get(pp_call_type)
+    if not call_type_meta:
+        print(f"WARN: No call_type_meta for ${pp_call_type=}")
+        return
     call_type: str = call_type_meta.get('name')
     cot_stale: int = int(config.get("COT_STALE"))
     cot_host_id: str = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
