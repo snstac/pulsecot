@@ -31,3 +31,6 @@ redis-server.log
 redis-server/
 .python-version
 __pycache__
+config.ini
+private_key.pem
+Pipfile

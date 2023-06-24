@@ -53,7 +53,7 @@ setuptools.setup(
     description="PulsePoint to Cursor-On-Target Gateway for ATAK and other TAK systems.",
     author="Greg Albrecht",
     author_email="oss@undef.net",
-    package_data={"": ["LICENSE"]},
+    package_data={"": ["LICENSE", "data/*.json"]},
     license="Apache License, Version 2.0",
     long_description=open("README.rst").read(),
     long_description_content_type="text/x-rst",
@@ -64,6 +64,5 @@ setuptools.setup(
         "Programming Language :: Python",
         "License :: OSI Approved :: Apache Software License",
     ],
-    keywords=["CAD", "Cursor on Target", "ATAK", "TAK", "COT"],
-    package_data={'': ['data/*.json']},
+    keywords=["CAD", "Cursor on Target", "ATAK", "TAK", "COT"]
 )

@@ -32,9 +32,12 @@ from .constants import (  # NOQA
     DEFAULT_AGENCY_IDS,
     PP_CALL_TYPES,
     DEFAULT_PP_URL,
+    DEFAULT_PP_AED_URL,
+    DEFAULT_PP_AED_API_USERNAME,
+    DEFAULT_PP_AED_API_PASSWORD
 )
 
-from .functions import incident_to_cot, create_tasks  # NOQA
+from .functions import incident_to_cot, create_tasks, aed_to_cot  # NOQA
 
 from .classes import CADWorker  # NOQA
 
