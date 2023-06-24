@@ -41,34 +41,58 @@ class CADWorker(pytak.QueueWorker):
 
     agency_details: dict = {}
 
-    async def handle_data(self, data: list) -> None:
+    async def handle_data(self, data: list, type) -> None:
         """
         Transforms Data to COT and puts it onto TX queue.
         """
         if not data:
             return
+        if type != "incident":
+            for aed in data.get('aeds',[]):
+                event: Union[str, None] = pulsecot.aed_to_cot(
+                    aed, config=self.config, agency=data["agency"]
+                )
+                if not event:
+                    self._logger.debug("Empty CoT")
+                    continue
+                await self.put_queue(event)
+        else:    
+            for incident in data.get("incidents", []):
+                event: Union[str, None] = pulsecot.incident_to_cot(
+                    incident, config=self.config, agency=data["agency"]
+                )
 
-        for incident in data.get("incidents", []):
-            event: Union[str, None] = pulsecot.incident_to_cot(
-                incident, config=self.config, agency=data["agency"]
-            )
+                if not event:
+                    self._logger.debug("Empty CoT")
+                    continue
 
-            if not event:
-                self._logger.debug("Empty CoT")
-                continue
-
-            await self.put_queue(event)
+                await self.put_queue(event)
 
     async def get_pp_feed(self, agency_id: str) -> dict:
         if not agency_id:
             self._logger.warning("No agency_id specified, try `find_agency()`?")
             return
-
-        url: str = f"{pulsecot.DEFAULT_PP_URL}{agency_id}"
-        async with self.session.get(url) as resp:
+        agency_id = agency_id.replace("\"","")
+        aed_url: str = f"{pulsecot.DEFAULT_PP_AED_URL}{agency_id}"
+        async with self.session.get(aed_url, auth=aiohttp.BasicAuth(pulsecot.DEFAULT_PP_AED_API_USERNAME, pulsecot.DEFAULT_PP_AED_API_PASSWORD)) as resp:
             if resp.status != 200:
                 response_content = await resp.text()
-                self._logger.error("Received HTTP Status %s for %s", resp.status, url)
+                self._logger.error("Received HTTP Status %s for %s", resp.status, aed_url)
+                self._logger.error(response_content)
+                return
+            json_resp = await resp.json(content_type="application/json")
+            if json_resp == None:
+                return
+
+            aeds: Union[dict, None] = json_resp.get("aeds", {})
+            if aeds:
+                data = {"aeds": aeds, "agency": self.agency_details[agency_id]}
+                await self.handle_data(data, "aeds")
+        inc_url: str = f"{pulsecot.DEFAULT_PP_URL}{agency_id}"
+        async with self.session.get(inc_url) as resp:
+            if resp.status != 200:
+                response_content = await resp.text()
+                self._logger.error("Received HTTP Status %s for %s", resp.status, inc_url)
                 self._logger.error(response_content)
                 return
 
@@ -84,7 +108,7 @@ class CADWorker(pytak.QueueWorker):
 
             data = {"incidents": active, "agency": self.agency_details[agency_id]}
 
-            await self.handle_data(data)
+            await self.handle_data(data, "incident")
 
     async def run(self, number_of_iterations=-1) -> None:
         """Runs this Thread, Reads from Pollers."""
@@ -98,6 +122,7 @@ class CADWorker(pytak.QueueWorker):
         # Populate the agency hints:
         agencies = pulsecot.gnu.get_agencies()
         for agency_id in agency_ids.split(","):
+            agency_id = agency_id.replace("\"","")
             self.agency_details[agency_id] = agencies[agency_id]
 
         async with aiohttp.ClientSession() as self.session:

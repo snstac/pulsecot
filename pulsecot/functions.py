@@ -52,6 +52,96 @@ def create_tasks(
     """
     return set([pulsecot.CADWorker(clitool.tx_queue, config)])
 
+def aed_to_cot_xml(
+    aed: dict,
+    config: Union[SectionProxy, None] = None,
+    agency: Union[dict, None] = None,
+) -> Union[ET.Element, None]:
+    """
+    Serializes a PulsePoint AEDs as Cursor-On-Target XML.
+
+    Parameters
+    ----------
+    incident : `dict`
+        Key/Value data struct of PulsePoint Incident.
+    config : `configparser.SectionProxy`
+        Configuration options and values.
+
+    Returns
+    -------
+    `xml.etree.ElementTree.Element`
+        Cursor-On-Target XML ElementTree object.
+    """
+    config: dict = config or {}
+    locString = aed['LatitudeLongitude'].split(",")
+    lat = locString[0]
+    lon = locString[1]
+
+    if lat is None or lon is None:
+        return None
+
+    if lat == "0.0000000000" or lon == "0.0000000000":
+        return None
+
+    remarks_fields = []
+
+    pp_id: str = aed["ID"]
+    cot_stale: int = int(config.get("COT_STALE"))
+    cot_host_id: str = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
+    cot_uid: str = f"PulsePoint-{agency['agency_initials']}-AED-{pp_id}"
+    cot_type: str = "a-u-G"
+
+    callsign = f"AED - {aed['AEDLocationName']}"
+    iconsetpath = "f7f71666-8b28-4b57-9fbb-e38e61d33b79/Google/earthquake.png"
+    if aed['AEDIsPrivate'] == True:
+        remarks_fields.append('Open to Public: No')
+    else:
+        remarks_fields.append('Open to Public: Yes')
+    remarks_fields.append(f"AED Location: {aed['AEDLocationDescription']}")
+    remarks_fields.append(f"Agency: {agency['short_agencyname']}")
+
+    remarks_fields.append(f"PPID: {pp_id}")
+
+    point = ET.Element("point")
+    point.set("lat", str(lat))
+    point.set("lon", str(lon))
+
+    point.set("ce", str("9999999.0"))
+    point.set("le", str("9999999.0"))
+    point.set("hae", str("9999999.0"))
+
+    contact = ET.Element("contact")
+    contact.set("callsign", str(callsign))
+
+    usericon = ET.Element("usericon")
+    usericon.set("iconsetpath", iconsetpath)
+
+    detail = ET.Element("detail")
+    detail.append(contact)
+    detail.append(usericon)
+
+    remarks = ET.Element("remarks")
+
+    remarks_fields.append(f"{cot_host_id}")
+
+    _remarks = "\n".join(list(filter(None, remarks_fields)))
+
+    remarks.text = _remarks
+    detail.append(remarks)
+
+    root = ET.Element("event")
+    root.set("version", "2.0")
+    root.set("type", cot_type)
+    root.set("uid", cot_uid)
+    root.set("how", "m-g")
+    root.set("time", pytak.cot_time())
+    root.set("start", pytak.cot_time())
+    root.set("stale", pytak.cot_time(cot_stale))
+
+    root.append(point)
+    root.append(detail)
+
+    return root
 
 def incident_to_cot_xml(
     incident: dict,
@@ -168,6 +258,15 @@ def incident_to_cot(
 ) -> Union[bytes, None]:
     """Wrapper that returns COT as an XML string."""
     cot: Union[ET.Element, None] = incident_to_cot_xml(call, config, agency)
+    return (
+        b"\n".join([pytak.DEFAULT_XML_DECLARATION, ET.tostring(cot)]) if cot else None
+    )
+
+def aed_to_cot(
+    call: dict, config: Union[dict, None] = None, agency: Union[dict,  None] = None
+) -> Union[bytes, None]:
+    """Wrapper that returns COT as an XML string."""
+    cot: Union[ET.Element, None] = aed_to_cot_xml(call, config, agency)
     return (
         b"\n".join([pytak.DEFAULT_XML_DECLARATION, ET.tostring(cot)]) if cot else None
     )

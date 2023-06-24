@@ -1,4 +1,4 @@
-SFPD CAD to Cursor-On-Target Gateway.
+PulsePoint to Cursor-On-Target Gateway.
 *************************************
 
 .. image:: https://raw.githubusercontent.com/ampledata/pulsecot/main/docs/Screenshot_20201026-142037_ATAK-25p.jpg
@@ -8,8 +8,7 @@ SFPD CAD to Cursor-On-Target Gateway.
 Example agencies:
 * DC Fire & EMS: EMS1205
 
-The SFPD CAD to Cursor-On-Target Gateway (SFPDCADCOT) transforms SFPD Computer 
-Aided Dispatch (CAD) calls for service to Cursor-On-Target (COT) Events for 
+The PulsePoint to Cursor-On-Target Gateway (PulseCOT) transforms PulsePoint incidents/AEDs to Cursor-On-Target (COT) Events for 
 display on Situational Awareness applications such as the Android Team 
 Awareness Kit (ATAK), WinTAK, RaptorX, TAKX, iTAK, et al. More information on 
 the TAK suite of tools cal be found at: https://www.tak.gov/
@@ -32,7 +31,7 @@ efforts is greatly appreciated.
 Installation
 ============
 
-SFPDCADCOT's functionality provided by a command-line program called `pulsecot`.
+PulseCOT's functionality provided by a command-line program called `pulsecot`.
 
 Installing as a Debian / Ubuntu Package [Recommended]::
 
@@ -75,7 +74,7 @@ a INI-stile configuration file.
 
 Parameters:
 
-* **CAD_URL**: (*optional*) SFPD CAD Data URL.
+* **AGENCY_IDS**: (*optional*) PulsePoint agency ID for displaying incidents/AEDs.
 * **COT_URL**: (*optional*) Destination for Cursor-On-Target messages. See `PyTAK <https://github.com/ampledata/pytak#configuration-parameters>`_ for options.
 * **POLL_INTERVAL**: (*optional*) Period in seconds to poll API. Default: 30
 
@@ -90,19 +89,19 @@ Configuration parameters are imported in the following priority order:
 
 Source
 ======
-SFPDCADCOT source can be found on Github: https://github.com/ampledata/pulsecot
+PulseCOT source can be found on Github: https://github.com/ampledata/pulsecot
 
 
 Author
 ======
-SFPDCADCOT is written and maintained by Greg Albrecht W2GMD oss@undef.net
+PulseCOT is written and maintained by Greg Albrecht W2GMD oss@undef.net
 
 https://ampledata.org/
 
 
 Copyright
 =========
-SFPDCADCOT is Copyright 2022 Greg Albrecht
+PulseCOT is Copyright 2022 Greg Albrecht
 
 
 License

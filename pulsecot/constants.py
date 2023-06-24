@@ -31,6 +31,10 @@ DEFAULT_POLL_INTERVAL: int = 120
 DEFAULT_COT_STALE: str = "130"
 DEFAULT_AGENCY_IDS: str = "21105,EMS1384,41000"
 DEFAULT_PP_URL: str = "https://web.pulsepoint.org/DB/giba.php?agency_id="
+DEFAULT_PP_AED_URL: str = "https://api.pulsepoint.org/v2/aed?apikey=mSwngLqWvSrQEVWu4eFF62Z2fZgsnCD5ZTaA8ZV&agencyid="
+DEFAULT_PP_AED_API_USERNAME: str = "aedviewer"
+DEFAULT_PP_AED_API_PASSWORD: str = "1ScOvupxfZ"
+
 
 DEFAULT_PP_CALL_TYPES_FILE: str = os.getenv(
     "PP_CALL_TYPES_FILE",
