@@ -14,7 +14,19 @@
 # limitations under the License.
 #
 
-from setuptools import setup
+"""PulsePoint to TAK Gateway."""
 
-if __name__ == "__main__":
-    setup()
+__version__ = "2.1.0-beta1"
+
+from .constants import (  # NOQA
+    DEFAULT_AGENCY_IDS,
+    DEFAULT_COT_STALE,
+    DEFAULT_POLL_INTERVAL,
+    DEFAULT_PP_URL,
+    PP_CALL_TYPES,
+    PULSEPOINT_HEADERS,
+)
+
+from .functions import incident_to_cot, create_tasks, get_agency_info  # NOQA
+
+from .classes import PulseWorker  # NOQA

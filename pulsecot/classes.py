@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2022 Greg Albrecht <oss@undef.net>
+# Copyright Sensors & Signals LLC https://www.snstac.com/
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Author:: Greg Albrecht W2GMD <oss@undef.net>
-#
 
 """PulseCOT Class Definitions."""
 
 import asyncio
+import json
 import random
 
-from typing import Union
+from typing import Optional, Union
 
 import aiohttp
 
@@ -30,27 +29,21 @@ import pulsecot
 
 from pulsecot.gnu import decode_pulse
 
-__author__ = "Greg Albrecht W2GMD <oss@undef.net>"
-__copyright__ = "Copyright 2022 Greg Albrecht"
-__license__ = "Apache License, Version 2.0"
 
-
-class CADWorker(pytak.QueueWorker):
-
-    """Reads CAD Data, renders to CoT, and puts on Queue."""
+class PulseWorker(pytak.QueueWorker):
+    """Read CAD Data, renders to CoT, and puts on Queue."""
 
     agency_details: dict = {}
 
-    async def handle_data(self, data: list) -> None:
-        """
-        Transforms Data to COT and puts it onto TX queue.
-        """
+    async def handle_data(self, data: dict) -> None:
+        """Transform Data to COT and puts it onto TX queue."""
+
         if not data:
-            return
+            return None
 
         for incident in data.get("incidents", []):
-            event: Union[str, None] = pulsecot.incident_to_cot(
-                incident, config=self.config, agency=data["agency"]
+            event: Optional[bytes] = pulsecot.incident_to_cot(
+                incident, config=self.config, agency=data.get("agency")
             )
 
             if not event:
@@ -59,35 +52,61 @@ class CADWorker(pytak.QueueWorker):
 
             await self.put_queue(event)
 
-    async def get_pp_feed(self, agency_id: str) -> dict:
-        if not agency_id:
-            self._logger.warning("No agency_id specified, try `find_agency()`?")
-            return
+    async def get_pp_feed(self, agency_id: str) -> Optional[dict]:
+        """Get PulsePoint feed."""
+        url: str = f"{pulsecot.DEFAULT_PP_URL}?resource=incidents&agencyid={agency_id}"
 
-        url: str = f"{pulsecot.DEFAULT_PP_URL}{agency_id}"
+        self._logger.debug("Getting PulsePoint feed from %s", url)
+
+        if not self.session:
+            self._logger.error("Session not created")
+            return None
+        if self.session.closed:
+            self._logger.error("Session closed")
+            return None
+
         async with self.session.get(url) as resp:
             if resp.status != 200:
                 response_content = await resp.text()
                 self._logger.error("Received HTTP Status %s for %s", resp.status, url)
                 self._logger.error(response_content)
-                return
+                self._logger.error(resp.headers)
+                self._logger.error(resp.request_info.headers)
+                return None
 
-            json_resp = await resp.json(content_type="text/html")
-            if json_resp == None:
-                return
+            json_resp = await resp.json()  # content_type="text/html")
+            if json_resp is None:
+                return None
 
-            decoded_data = decode_pulse(json_resp)
+            decoded_data: Optional[dict] = None
+            try:
+                decoded_data = decode_pulse(json_resp)
+            except json.decoder.JSONDecodeError as exc:
+                self._logger.error("Unable to decode JSON")
+                # self._logger.info(json_resp)
+                self._logger.exception(exc)
 
-            active: Union[dict, None] = decoded_data.get("incidents", {}).get("active")
+            if not decoded_data:
+                return None
+
+            incidents: Optional[dict] = decoded_data.get("incidents", {})
+            if not incidents:
+                return None
+
+            active: Optional[dict] = incidents.get("active")
             if not active:
-                return
+                return None
 
-            data = {"incidents": active, "agency": self.agency_details[agency_id]}
+            data = {
+                "incidents": active,
+                "agency": self.agency_details.get(agency_id, {}),
+            }
 
             await self.handle_data(data)
+        return None
 
-    async def run(self, number_of_iterations=-1) -> None:
-        """Runs this Thread, Reads from Pollers."""
+    async def run(self) -> None:
+        """Run this Thread, Reads from Pollers."""
         self._logger.info("Running %s", self.__class__)
 
         poll_interval: str = self.config.get(
@@ -96,16 +115,34 @@ class CADWorker(pytak.QueueWorker):
         agency_ids: str = self.config.get("AGENCY_IDS", pulsecot.DEFAULT_AGENCY_IDS)
 
         # Populate the agency hints:
-        agencies = pulsecot.gnu.get_agencies()
-        for agency_id in agency_ids.split(","):
-            self.agency_details[agency_id] = agencies[agency_id]
+        if not self.config.get("DONT_UPDATE_AGENCY"):
+            for agency in agency_ids.split(","):
+                self._logger.info("Populating PulsePoint agency details for %s", agency)
+                self.agency_details[agency] = {}
+                agency_info = pulsecot.get_agency_info(agency)
+                if not agency_info:
+                    self._logger.warning(
+                        "Agency %s not found in PulsePoint agency list", agency
+                    )
+                    continue
+                self.agency_details[agency] = agency_info
 
-        async with aiohttp.ClientSession() as self.session:
-            while 1:
+        async with aiohttp.ClientSession(
+            headers=pulsecot.PULSEPOINT_HEADERS
+        ) as self.session:
+            while True:
                 self._logger.info(
                     "%s polling %s every %ss", self.__class__, agency_ids, poll_interval
                 )
-                for agency_id in agency_ids.split(","):
-                    await self.get_pp_feed(agency_id.strip())
+
+                agencies = agency_ids.split(",")
+                random.shuffle(agencies)
+                for agency in agencies:
+                    self._logger.info(
+                        "Polling agency %s: %s",
+                        agency,
+                        self.agency_details.get(agency, {}).get("agencyname"),
+                    )
+                    await self.get_pp_feed(agency.strip())
                     await asyncio.sleep(random.random() * 10)
                 await asyncio.sleep(int(poll_interval))

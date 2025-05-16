@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2022 Greg Albrecht <oss@undef.net>
+# Copyright Sensors & Signals LLC https://www.snstac.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,28 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Author:: Greg Albrecht W2GMD <oss@undef.net>
-#
 
 """PulseCOT Functions."""
+
+import json
+import warnings
+import urllib.request
 
 import xml.etree.ElementTree as ET
 
 from configparser import SectionProxy
-from typing import Union, Set
+from typing import Optional, Union, Set
 
 import pytak
 import pulsecot  # pylint: disable=cyclic-import
-import pulsecot.gnu
-
-__author__ = "Greg Albrecht W2GMD <oss@undef.net>"
-__copyright__ = "Copyright 2022 Greg Albrecht"
-__license__ = "Apache License, Version 2.0"
 
 
-def create_tasks(
-    config: SectionProxy, clitool: pytak.CLITool
-) -> Set[pytak.Worker,]:
+def create_tasks(config: SectionProxy, clitool: pytak.CLITool) -> Set[pytak.Worker,]:
     """
     Creates specific coroutine task set for this application.
 
@@ -50,16 +45,44 @@ def create_tasks(
     `set`
         Set of PyTAK Worker classes for this application.
     """
-    return set([pulsecot.CADWorker(clitool.tx_queue, config)])
+    return set([pulsecot.PulseWorker(clitool.tx_queue, config)])
+
+
+def get_agency_info(agency) -> Union[dict, None]:
+    """
+    Get PulsePoint agencies.
+
+    Returns
+    -------
+    `dict`
+        Dictionary of PulsePoint agencies.
+    """
+    url: str = f"{pulsecot.DEFAULT_PP_URL}?resource=agencies&agencyid={agency}"
+    req = urllib.request.Request(url)
+    for key, value in pulsecot.PULSEPOINT_HEADERS.items():
+        req.add_header(key, value)
+    content = urllib.request.urlopen(req).read()
+    if not content:
+        return None
+
+    data = json.loads(content)
+    if not data:
+        return None
+
+    data = pulsecot.gnu.decode_pulse(data)
+    if not data:
+        return None
+
+    return data.get("agencies", [])[0]
 
 
 def incident_to_cot_xml(
     incident: dict,
-    config: Union[SectionProxy, None] = None,
-    agency: Union[dict, None] = None,
+    config: Union[SectionProxy, dict, None] = None,
+    agency: Optional[dict] = None,
 ) -> Union[ET.Element, None]:
     """
-    Serializes a PulsePoint Incidents as Cursor-On-Target XML.
+    Serialize a PulsePoint Incidents as Cursor on Target XML.
 
     Parameters
     ----------
@@ -73,10 +96,11 @@ def incident_to_cot_xml(
     `xml.etree.ElementTree.Element`
         Cursor-On-Target XML ElementTree object.
     """
-    config: dict = config or {}
+    config = config or {}
+    agency = agency or {}
 
-    lat = incident["Latitude"]
-    lon = incident["Longitude"]
+    lat = incident.get("Latitude")
+    lon = incident.get("Longitude")
 
     if lat is None or lon is None:
         return None
@@ -87,22 +111,29 @@ def incident_to_cot_xml(
     remarks_fields = []
 
     pp_id: str = incident["ID"]
+
     pp_call_type: str = incident["PulsePointIncidentCallType"]
     call_type_meta = pulsecot.PP_CALL_TYPES.get(pp_call_type)
     if not call_type_meta:
-        print(f"WARN: No call_type_meta for {pp_call_type=}")
-        return
-    call_type: str = call_type_meta.get('name')
-    cot_stale: int = int(config.get("COT_STALE"))
+        warnings.warn(
+            f"No Call Type metadata for {pp_call_type=} from agency {agency.get('id')}: {agency.get('agencyname')}",
+            SyntaxWarning,
+        )
+        call_type_meta = pulsecot.PP_CALL_TYPES.get("Default")
+
+    call_type: str = call_type_meta.get("name")
+
+    cot_stale: int = int(config.get("COT_STALE", pulsecot.DEFAULT_COT_STALE))
+
     cot_host_id: str = config.get("COT_HOST_ID", pytak.DEFAULT_HOST_ID)
-    cot_uid: str = f"PulsePoint-{agency['agency_initials']}-{pp_id}"
+    cot_uid: str = f"PulsePoint-{agency.get('agency_initials')}-{pp_id}"
     cot_type: str = "a-u-G"
 
     callsign = f"{call_type} - {incident['FullDisplayAddress']}"
     iconsetpath = "f7f71666-8b28-4b57-9fbb-e38e61d33b79/Google/caution.png"
 
     remarks_fields.append(callsign)
-    remarks_fields.append(agency["short_agencyname"])
+    remarks_fields.append(agency.get("short_agencyname"))
 
     live_radio: Union[list, None] = agency.get("live_radio")
     if live_radio:
@@ -127,12 +158,14 @@ def incident_to_cot_xml(
 
     usericon = ET.Element("usericon")
     _call_type = call_type.lower()
+
     if "fire" in _call_type:
-        cot_type = "a-h-G"
+        cot_type = "a-n-G"
         iconsetpath = "83198b4872a8c34eb9c549da8a4de5a28f07821185b39a2277948f66c24ac17a/GeoOps/Fire Location.png"
     elif "medical" in _call_type:
-        cot_type = "a-f-G"
+        cot_type = "a-n-G"
         iconsetpath = "83198b4872a8c34eb9c549da8a4de5a28f07821185b39a2277948f66c24ac17a/GeoOps/Medical.png"
+
     usericon.set("iconsetpath", iconsetpath)
 
     detail = ET.Element("detail")

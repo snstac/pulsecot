@@ -747,6 +747,9 @@ def decode_pulse(data: dict) -> list:
     out = out[1 : out.rindex(b'"')].decode()
     out = out.replace(r"\"", r'"')
 
+    # Work-around for quotes-within-quotes, i.e Long Beach CERT:
+    #  \\"Doing the Greatest Good for the Greatest Number\\"
+    out = out.replace(r'\\"', r"'")
     return json.loads(out)
 
 
