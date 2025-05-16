@@ -18,7 +18,12 @@
 
 import json
 import os
-import pkg_resources
+
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
+
 
 DEFAULT_POLL_INTERVAL: int = 120
 DEFAULT_COT_STALE: str = "600"
@@ -27,12 +32,11 @@ DEFAULT_PP_URL: str = "https://api.pulsepoint.org/v1/webapp"
 
 DEFAULT_PP_CALL_TYPES_FILE: str = os.getenv(
     "PP_CALL_TYPES_FILE",
-    pkg_resources.resource_filename(__name__, "data/call_types.json"),
+    str(files("pulsecot").joinpath("call_types.json")),
 )
 
 with open(DEFAULT_PP_CALL_TYPES_FILE, "r") as call_types_file:
     PP_CALL_TYPES: dict = json.load(call_types_file)
-
 
 # Headers for the new PulsePoint API
 PULSEPOINT_HEADERS = {
