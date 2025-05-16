@@ -12,7 +12,7 @@ Call types source: https://web.pulsepoint.org/assets/json/call_types.json
 
 License
 =======
-Copyright Sensors & Signals LLC snstac.com
+Copyright Sensors & Signals LLC https://snstac.com/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
