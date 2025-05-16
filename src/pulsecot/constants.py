@@ -32,7 +32,7 @@ DEFAULT_PP_URL: str = "https://api.pulsepoint.org/v1/webapp"
 
 DEFAULT_PP_CALL_TYPES_FILE: str = os.getenv(
     "PP_CALL_TYPES_FILE",
-    str(files("pulsecot").joinpath("call_types.json")),
+    str(files("pulsecot").joinpath("data/call_types.json")),
 )
 
 with open(DEFAULT_PP_CALL_TYPES_FILE, "r") as call_types_file:
