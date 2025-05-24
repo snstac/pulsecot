@@ -94,8 +94,8 @@ bdist_deb: deb_dist deb_custom
 	
 faux_latest:
 	ls -al deb_dist/
-	cp deb_dist/$(REPO_NAME)_*-1_all.deb deb_dist/$(REPO_NAME)_latest_all.deb
-	cp deb_dist/$(REPO_NAME)_*-1_all.deb deb_dist/python3-$(REPO_NAME)_latest_all.deb
+	cp deb_dist/python3-$(REPO_NAME)_*-1_all.deb deb_dist/$(REPO_NAME)_latest_all.deb
+	cp deb_dist/python3-$(REPO_NAME)_*-1_all.deb deb_dist/python3-$(REPO_NAME)_latest_all.deb
 
 package: bdist_deb faux_latest
 
