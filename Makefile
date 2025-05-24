@@ -93,6 +93,7 @@ bdist_deb: deb_dist deb_custom
 	cd deb_dist/$(REPO_NAME)-*/ && dpkg-buildpackage -rfakeroot -uc -us
 	
 faux_latest:
+	ls -al deb_dist/
 	cp deb_dist/$(REPO_NAME)_*-1_all.deb deb_dist/$(REPO_NAME)_latest_all.deb
 	cp deb_dist/$(REPO_NAME)_*-1_all.deb deb_dist/python3-$(REPO_NAME)_latest_all.deb
 
