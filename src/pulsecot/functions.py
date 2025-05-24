@@ -116,7 +116,7 @@ def incident_to_cot_xml(
     call_type_meta = pulsecot.PP_CALL_TYPES.get(pp_call_type)
     if not call_type_meta:
         warnings.warn(
-            f"No Call Type metadata for {pp_call_type=} from agency {agency.get('id')}: {agency.get('agencyname')}",
+            f"No Call Type metadata for call type {pp_call_type} from agency {agency.get('id')}: {agency.get('agencyname')}",
             SyntaxWarning,
         )
         call_type_meta = pulsecot.PP_CALL_TYPES.get("Default")
