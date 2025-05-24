@@ -1,7 +1,6 @@
 # PulsePoint to TAK Gateway
 
-![Screenshot of ADS-B PLI in ATAK](https://raw.githubusercontent.com/ampledata/pulsecot/main/docs/Screenshot_20201026-142037_ATAK-25p.jpg)
-[View full image](https://github.com/ampledata/pulsecot/blob/main/docs/Screenshot_20201026-142037_ATAK.jpg)
+PulseCOT is a lightweight Python application designed to bridge PulsePoint emergency call data with Team Awareness Kit (TAK) platforms. It enables seamless integration of real-time emergency information into TAK products such as ATAK, WinTAK, and iTAK. With support for both multicast and unicast transmissions, as well as TAK Server compatibility, PulseCOT ensures flexibility in delivering critical data to your TAK ecosystem.
 
 ## Example Agencies
 - **DC Fire & EMS**: EMS1205
